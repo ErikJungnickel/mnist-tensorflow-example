@@ -63,7 +63,7 @@ input_shape, x_train, y_train, x_test, y_test = preprocessImageData()
 model = convolution()
 
 # train the model
-model.fit(x_train, y_train, epochs=10, batch_size=32)
+model.fit(x_train, y_train, epochs=10, batch_size=32, verbose=1)
 
 # evaluate our model with the test mnist set
 score = model.evaluate(x_test, y_test)
