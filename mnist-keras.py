@@ -1,9 +1,14 @@
 import keras
 from keras.models import Sequential
-from keras import layers, optimizers
+from keras import layers, optimizers, callbacks
 from keras.layers import Conv2D, MaxPool2D, Dense, Activation, Flatten
 from keras.optimizers import Adam
 from keras.datasets import mnist
+from keras.models import load_model
+import os.path
+
+imgSize = 28
+modelPath = './model/model.h5'
 
 
 def preprocessImageData():
@@ -11,10 +16,10 @@ def preprocessImageData():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
     # images are 28x28 pixels with 1 channel (greyscale image = 1 channel, rbg image would have 3 channels)
-    x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
-    x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
+    x_train = x_train.reshape(x_train.shape[0], imgSize, imgSize, 1)
+    x_test = x_test.reshape(x_test.shape[0], imgSize, imgSize, 1)
 
-    input_shape = (28, 28, 1)
+    input_shape = (imgSize, imgSize, 1)
 
     # image data is presented as value between 0 and 255 -> bring it to a 0 - 1 value
     x_train = x_train.astype('float32')
@@ -29,11 +34,11 @@ def preprocessImageData():
     return input_shape, x_train, y_train, x_test, y_test
 
 
-def convolution():
+def convolution(input_shape):
     # keras sequential model
     model = Sequential()
 
-    # convolution layer with 32 features, the first layer needs to know the input shape    
+    # convolution layer with 32 features, the first layer needs to know the input shape
     model.add(Conv2D(32, 5, activation='relu', input_shape=input_shape))
 
     # pooling layer
@@ -58,14 +63,35 @@ def convolution():
     return model
 
 
-input_shape, x_train, y_train, x_test, y_test = preprocessImageData()
+def getModel(input_shape):
+    # check if there is a model file
+    if os.path.isfile(modelPath):
+        print('loading model %s' % modelPath)
+        model = load_model(modelPath)
+    else:
+        model = convolution(input_shape)
+    
+    return model
 
-model = convolution()
 
-# train the model
-model.fit(x_train, y_train, epochs=10, batch_size=32, verbose=1)
+def train():
+    input_shape, x_train, y_train, x_test, y_test = preprocessImageData()
 
-# evaluate our model with the test mnist set
-score = model.evaluate(x_test, y_test)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+    model = getModel(input_shape)
+
+    # callback that saves the model will be called after each epoch
+    checkpoint = keras.callbacks.ModelCheckpoint(
+        modelPath, monitor='val_acc', verbose=1, mode='auto')
+    callbacks_list = [checkpoint]
+
+    # train the model
+    model.fit(x_train, y_train, epochs=10, batch_size=32,
+              verbose=1, callbacks=callbacks_list)
+
+    # evaluate our model with the test mnist set
+    score = model.evaluate(x_test, y_test)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
+
+
+train()

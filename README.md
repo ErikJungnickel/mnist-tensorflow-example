@@ -1,10 +1,18 @@
 # mnist-tensorflow-example
-Just the usual mnist example in 3 variations
+Just the usual mnist example in 3 variations (+ flask serving)
 
 ### Dependencies
+
+Install via pip
+
+
 tensorflow (https://www.tensorflow.org/install/)
 
 keras (https://keras.io/#installation)
+
+h5py
+
+flask
 
 ### mnist.py
 
@@ -23,4 +31,10 @@ Taken from the tensorflow tutorial (https://www.tensorflow.org/get_started/mnist
 `python mnist-keras.py`
 
 Basic mnist cnn using keras (https://keras.io/)
+
+### mnist-keras-flask.py
+
+`python mnist-keras-flask.py`
+
+Simple web app that loads the keras model created with the `mnist-keras.py` script and lets you test it
 

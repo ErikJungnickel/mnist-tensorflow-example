@@ -1,2 +1,5 @@
 .vscode/settings.json
 MNIST_data/*
+*.h5
+*.pyc
+*.png
