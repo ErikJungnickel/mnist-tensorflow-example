@@ -36,5 +36,5 @@ Basic mnist cnn using keras (https://keras.io/)
 
 `python mnist-keras-flask.py`
 
-Simple web app that loads the keras model created with the `mnist-keras.py` script and lets you test it
+Simple web app that loads the keras model created with the `mnist-keras.py` script and lets you test it (taken from https://github.com/llSourcell/how_to_deploy_a_keras_model_to_production)
 
